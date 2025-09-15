@@ -17,10 +17,12 @@ namespace PromoCodeFactory.WebHost.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<Role> _rolesRepository;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
+        public EmployeesController(IRepository<Employee> employeeRepository, IRepository<Role> rolesRepository)
         {
             _employeeRepository = employeeRepository;
+            _rolesRepository = rolesRepository;
         }
 
         /// <summary>
@@ -69,6 +71,59 @@ namespace PromoCodeFactory.WebHost.Controllers
             };
 
             return employeeModel;
+        }
+
+        /// <summary>
+        /// Создать нового сотрудника
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<object> CreateEmployeeAsync(EmployeeCreateAndUpdate employee)
+        {
+            var roles = await _rolesRepository.GetManyByIdAsync(employee.Roles);
+            var employeeObject = new Employee
+            {
+                Id = employee.Id,
+                Email = employee.Email,
+                Roles = roles.ToList(),
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                AppliedPromocodesCount = employee.AppliedPromocodesCount
+            };
+            await _employeeRepository.AddAsync(employeeObject);
+            return new { status = "ok" };
+        }
+
+        /// <summary>
+        /// Редактирование сотрудника
+        /// </summary>
+        /// <returns></returns>
+        [HttpPatch]
+        public async Task<object> UpdateEmployeeAsync(EmployeeCreateAndUpdate employee)
+        {
+            var roles = await _rolesRepository.GetManyByIdAsync(employee.Roles);
+            var employeeObject = new Employee
+            {
+                Id = employee.Id,
+                Email = employee.Email,
+                Roles = roles.ToList(),
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                AppliedPromocodesCount = employee.AppliedPromocodesCount
+            };
+            await _employeeRepository.UpdateAsync(employeeObject);
+            return new { status = "ok" };
+        }
+
+        /// <summary>
+        /// Удалить сотрудника по Id
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("{id:guid}")]
+        public async Task<object> DeleteEmployeeAsync(Guid id)
+        {
+            await _employeeRepository.DeleteAsync(id);
+            return new { status = "ok" };
         }
     }
 }
