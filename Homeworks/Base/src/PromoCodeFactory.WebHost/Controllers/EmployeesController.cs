@@ -78,20 +78,28 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<object> CreateEmployeeAsync(EmployeeCreateAndUpdate employee)
+        public async Task<IActionResult> CreateEmployeeAsync(EmployeeCreateAndUpdate employee)
         {
-            var roles = await _rolesRepository.GetManyByIdAsync(employee.Roles);
-            var employeeObject = new Employee
+            try
             {
-                Id = employee.Id,
-                Email = employee.Email,
-                Roles = roles.ToList(),
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                AppliedPromocodesCount = employee.AppliedPromocodesCount
-            };
-            await _employeeRepository.AddAsync(employeeObject);
-            return new { status = "ok" };
+                var roles = await _rolesRepository.GetManyByIdAsync(employee.Roles);
+                var employeeObject = new Employee
+                {
+                    Id = employee.Id,
+                    Email = employee.Email,
+                    Roles = roles.ToList(),
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    AppliedPromocodesCount = employee.AppliedPromocodesCount
+                };
+                await _employeeRepository.AddAsync(employeeObject);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            
+            return Created();
         }
 
         /// <summary>
@@ -99,20 +107,27 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPatch]
-        public async Task<object> UpdateEmployeeAsync(EmployeeCreateAndUpdate employee)
+        public async Task<IActionResult> UpdateEmployeeAsync(EmployeeCreateAndUpdate employee)
         {
-            var roles = await _rolesRepository.GetManyByIdAsync(employee.Roles);
-            var employeeObject = new Employee
+            try
             {
-                Id = employee.Id,
-                Email = employee.Email,
-                Roles = roles.ToList(),
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                AppliedPromocodesCount = employee.AppliedPromocodesCount
-            };
-            await _employeeRepository.UpdateAsync(employeeObject);
-            return new { status = "ok" };
+                var roles = await _rolesRepository.GetManyByIdAsync(employee.Roles);
+                var employeeObject = new Employee
+                {
+                    Id = employee.Id,
+                    Email = employee.Email,
+                    Roles = roles.ToList(),
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    AppliedPromocodesCount = employee.AppliedPromocodesCount
+                };
+                await _employeeRepository.UpdateAsync(employeeObject);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            return Ok();
         }
 
         /// <summary>
@@ -120,10 +135,17 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpDelete("{id:guid}")]
-        public async Task<object> DeleteEmployeeAsync(Guid id)
+        public async Task<IActionResult> DeleteEmployeeAsync(Guid id)
         {
-            await _employeeRepository.DeleteAsync(id);
-            return new { status = "ok" };
+            try
+            {
+                await _employeeRepository.DeleteAsync(id);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+            return Ok();
         }
     }
 }
