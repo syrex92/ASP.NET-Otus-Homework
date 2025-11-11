@@ -95,7 +95,11 @@ namespace PromoCodeFactory.WebHost.Controllers
                 //Если партнеру выставляется лимит, то мы 
                 //должны обнулить количество промокодов, которые партнер выдал, если лимит закончился, 
                 //то количество не обнуляется
-                partner.NumberIssuedPromoCodes = 0;
+                if (activeLimit.EndDate > DateTime.Now)
+                {
+                    partner.NumberIssuedPromoCodes = 0;
+                }
+
                 
                 //При установке лимита нужно отключить предыдущий лимит
                 activeLimit.CancelDate = DateTime.Now;
