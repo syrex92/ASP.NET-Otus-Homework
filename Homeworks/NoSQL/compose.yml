@@ -52,6 +52,11 @@ services:
       - 5435:5432
     environment: 
       - POSTGRES_PASSWORD=docker
+  promocode-factory-giving-to-customer-mongo-db:
+    image: "mongo:latest"
+    restart: always 
+    ports:
+      - 27017:27017
   #GivingToCustomer Api
   promocode-factory-giving-to-customer-api:
     build: src/Pcf.GivingToCustomer/

@@ -16,6 +16,7 @@ using Pcf.GivingToCustomer.DataAccess;
 using Pcf.GivingToCustomer.DataAccess.Data;
 using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.Integration;
+using MongoDB.Driver;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.GivingToCustomer.WebHost
@@ -35,16 +36,20 @@ namespace Pcf.GivingToCustomer.WebHost
         {
             services.AddControllers().AddMvcOptions(x=> 
                 x.SuppressAsyncSuffixInActionNames = false);
-            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped<INotificationGateway, NotificationGateway>();
-            services.AddScoped<IDbInitializer, EfDbInitializer>();
-            services.AddDbContext<DataContext>(x =>
+
+            services.AddSingleton<IMongoClient>(sp =>
             {
-                //x.UseSqlite("Filename=PromocodeFactoryGivingToCustomerDb.sqlite");
-                x.UseNpgsql(Configuration.GetConnectionString("PromocodeFactoryGivingToCustomerDb"));
-                x.UseSnakeCaseNamingConvention();
-                x.UseLazyLoadingProxies();
+                return new MongoClient(Configuration.GetConnectionString("PromocodeFactoryGivingToCustomerMongoDb"));
             });
+            services.AddScoped(sp =>
+            {
+                var client = new MongoClient(Configuration.GetConnectionString("PromocodeFactoryGivingToCustomerMongoDb"));
+                return client.GetDatabase(Configuration.GetSection("MongoDb")["DatabaseName"]);
+            });
+
+            services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>));
+            services.AddScoped<INotificationGateway, NotificationGateway>();
+            services.AddScoped<IDbInitializer, MongoDbInitializer>();
 
             services.AddOpenApiDocument(options =>
             {
