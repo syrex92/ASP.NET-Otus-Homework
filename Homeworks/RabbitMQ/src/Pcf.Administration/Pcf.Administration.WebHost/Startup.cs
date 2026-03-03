@@ -10,6 +10,10 @@ using Pcf.Administration.DataAccess.Repositories;
 using Pcf.Administration.DataAccess.Data;
 using Pcf.Administration.Core.Abstractions.Repositories;
 using System;
+using MassTransit;
+using Pcf.Administration.WebHost.Consumers;
+using Pcf.Administration.WebHost.Services;
+using Pcf.Administration.WebHost.Interfaces;
 
 namespace Pcf.Administration.WebHost
 {
@@ -44,6 +48,30 @@ namespace Pcf.Administration.WebHost
             {
                 options.Title = "PromoCode Factory Administration API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddScoped<IPromocodeService, PromocodeService>();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<PromocodeIssuedConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("rabbitmq", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.UseMessageRetry(r =>
+                        r.Interval(3, TimeSpan.FromSeconds(5)));
+
+                    cfg.ReceiveEndpoint("administration_queue", e =>
+                    {
+                        e.ConfigureConsumer<PromocodeIssuedConsumer>(context);
+                    });
+                });
             });
         }
 

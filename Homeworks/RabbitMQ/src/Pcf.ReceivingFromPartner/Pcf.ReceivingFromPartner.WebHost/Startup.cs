@@ -12,6 +12,7 @@ using Pcf.ReceivingFromPartner.DataAccess;
 using Pcf.ReceivingFromPartner.DataAccess.Repositories;
 using Pcf.ReceivingFromPartner.DataAccess.Data;
 using Pcf.ReceivingFromPartner.Integration;
+using MassTransit;
 
 namespace Pcf.ReceivingFromPartner.WebHost
 {
@@ -58,6 +59,25 @@ namespace Pcf.ReceivingFromPartner.WebHost
             {
                 options.Title = "PromoCode Factory Receiving From Partner API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumers(typeof(Program).Assembly);
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("rabbitmq", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.UseMessageRetry(r =>
+                        r.Interval(3, TimeSpan.FromSeconds(5)));
+
+                    cfg.ConfigureEndpoints(context);
+                });
             });
         }
 

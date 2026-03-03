@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pcf.ReceivingFromPartner.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pcf.Administration.IntegrationTests", "Pcf.Administration\Pcf.Administration.IntegrationTests\Pcf.Administration.IntegrationTests.csproj", "{38F1FFB6-5EBF-4EDF-B74E-AF29B0F1ABF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pcf.Messages", "Pcf.Messages\Pcf.Messages.csproj", "{3D2408E1-36E1-4475-83A3-AB309B16A103}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{38F1FFB6-5EBF-4EDF-B74E-AF29B0F1ABF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38F1FFB6-5EBF-4EDF-B74E-AF29B0F1ABF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38F1FFB6-5EBF-4EDF-B74E-AF29B0F1ABF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2408E1-36E1-4475-83A3-AB309B16A103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2408E1-36E1-4475-83A3-AB309B16A103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2408E1-36E1-4475-83A3-AB309B16A103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2408E1-36E1-4475-83A3-AB309B16A103}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
