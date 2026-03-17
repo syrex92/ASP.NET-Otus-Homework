@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+option csharp_namespace = "CustomersGrpc";
+
+service CustomersService {
+  rpc GetCustomers (Empty) returns (CustomersListResponse);
+  rpc GetCustomer (GetCustomerRequest) returns (CustomerResponse);
+  rpc CreateCustomer (CreateCustomerRequest) returns (CreateCustomerReply);
+  rpc EditCustomer (EditCustomerRequest) returns (Empty);
+  rpc DeleteCustomer (DeleteCustomerRequest) returns (Empty);
+}
+
+message Empty {}
+
+message GetCustomerRequest {
+  string id = 1; // Guid как string
+}
+
+message DeleteCustomerRequest {
+  string id = 1;
+}
+
+message EditCustomerRequest {
+  string id = 1;
+  string email = 2;
+  string firstName = 3;
+  string lastName = 4;
+  repeated string preferenceIds = 5;
+}
+
+message CreateCustomerRequest {
+  string email = 1;
+  string firstName = 2;
+  string lastName = 3;
+  repeated string preferenceIds = 4;
+}
+
+message CustomerShort {
+  string id = 1;
+  string email = 2;
+  string firstName = 3;
+  string lastName = 4;
+}
+
+message CustomersListResponse {
+  repeated CustomerShort customers = 1;
+}
+
+message CustomerResponse {
+  string id = 1;
+  string email = 2;
+  string firstName = 3;
+  string lastName = 4;
+}
+
+message CreateCustomerReply {
+  string id = 1;
+}
